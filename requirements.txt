@@ -1,0 +1,31 @@
+# Core Dependencies
+numpy
+pandas
+scipy
+
+# Deep Learning & RL
+torch
+gymnasium
+stable-baselines3
+ray[rllib]
+
+# Visualization
+matplotlib
+seaborn
+plotly
+networkx
+
+# Streamlit Dashboard
+streamlit
+streamlit-aggrid
+streamlit-plotly-events
+
+# Utilities
+pyyaml
+tqdm
+joblib
+scikit-learn
+
+# Testing
+pytest
+pytest-cov
