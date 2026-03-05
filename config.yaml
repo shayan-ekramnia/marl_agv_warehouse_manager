@@ -22,6 +22,6 @@ training:
 warehouse:
   height: 20
   num_lgvs: 6
-  num_pallets: 30
+  num_pallets: 20
   num_shelves: 15
   width: 20

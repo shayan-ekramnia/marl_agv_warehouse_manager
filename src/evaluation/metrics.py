@@ -77,21 +77,33 @@ class MetricsCalculator:
         - Distance efficiency (20%)
         - Time efficiency (20%)
         """
-        completion_score = metrics.get('completion_rate', 0) * 40
+        completion_rate = metrics.get('completion_rate', metrics.get('mean_completion_rate', metrics.get('completion_rate_mean', 0)))
+        completion_score = completion_rate * 40
 
-        collision_rate = metrics.get('collision_rate', 1)
+        episode_length = metrics.get('episode_length', metrics.get('mean_episode_length', metrics.get('episode_length_mean', 1000)))
+        if episode_length <= 0:
+            episode_length = 1000
+
+        collision_rate = metrics.get('collision_rate', metrics.get('mean_collision_rate', metrics.get('collision_rate_mean', None)))
+        if collision_rate is None:
+            collisions = metrics.get('collision_count', metrics.get('mean_collisions', metrics.get('collision_count_mean', 0)))
+            collision_rate = collisions / episode_length
+
         collision_score = max(0, 1 - collision_rate) * 20
 
         # Distance efficiency (lower is better, normalized)
-        distance_per_step = metrics.get('distance_per_step', 1)
+        distance_per_step = metrics.get('distance_per_step', metrics.get('mean_distance_per_step', metrics.get('distance_per_step_mean', None)))
+        if distance_per_step is None:
+            distance = metrics.get('total_distance', metrics.get('mean_distance', metrics.get('total_distance_mean', 0)))
+            distance_per_step = distance / episode_length
+
         distance_score = max(0, min(1, 1 / (1 + distance_per_step))) * 20
 
         # Time efficiency (shorter episodes are better for same completion)
-        episode_length = metrics.get('episode_length', 1000)
         time_score = max(0, min(1, 500 / episode_length)) * 20
 
         total_score = completion_score + collision_score + distance_score + time_score
-        return total_score
+        return float(total_score)
 
 
 class ComparisonAnalyzer:
